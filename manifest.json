@@ -24,23 +24,17 @@
             "de": "Text To Speech Highlighter",
             "en": "Text To Speech Highlighter"
         },
-        "default_path": "sidepanel/page.html"
+        "default_path": "sidePanel/index.html"
     },
     "content_scripts": [
         {
             "matches": ["*://*/*"],
-            "js": ["content-script.js"],
+            "js": [
+                "lib/jquery-3.7.1.slim.min.js",
+                "lib/SelectionTextNodeExtractor.js",
+                "content-script.js"
+            ],
             "run_at": "document_end"
-        }
-    ],
-    "web_accessible_resources": [
-        {
-            "matches": ["<all_urls>"],
-            "resources": [
-                "/node_modules/jquery/dist/jquery.js",
-                "/node_modules/@mozilla/readability/Readability.js"
-        ]
-
         }
     ]
 }
