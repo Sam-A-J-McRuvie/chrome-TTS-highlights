@@ -11,7 +11,7 @@
     not because they are easy, but because they are hard." 
     - JFK September 12, 1962, Rice University, Houston, Texas
 */
-const context = 'content-script';
+const context = 'content-script'; // TODO: Refactor, not really needed
 console.log(`${context}:loaded at:${new Date().toLocaleTimeString()}`); 
 // TODO: Handle request from background script, to read the selected text
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
@@ -19,14 +19,30 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         case "startReading": {
             let selection = window.getSelection();
             console.log(`${context}:start reading:${selection.toString()}`);
-            let rne = new SelectionTextNodeExtractor(selection);
-            rne.getNodes().forEach(node => {
+            let ste = new SelectTextExtractor(selection);
+
+            console.group();
+            ste.nodesArray.forEach(value => {
+                console.log(`Node: ${value.node.textContent}`);
                 console.group();
-                console.log(`${context}:node name:${node.nodeName}`); 
-                console.log(`${context}:node text:${node.textContent}`);
-                console.log(`${context}:node tag:${node.tagName}`);
+                value.wordsArray.forEach(value => {
+                    console.log(
+                        `Word: "${value.word}", Begin: ${value.start}, End: ${value.end}`
+                    );
+                });
                 console.groupEnd();
             });
+            console.groupEnd();
+        }
+        break;
+        case "nextWord": {
+
+
+        }
+        break;
+        case "pauseReading": {
+
+
         }
         break;
         case "stopReading": {
@@ -34,7 +50,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         }
         break;
         default: {
-            console.log(`${context}:unknown message:${message.message}`);
+            throw new Error(`${context}:unknown message:${message.message}`);
         }
     }
 });

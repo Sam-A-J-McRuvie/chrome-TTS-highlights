@@ -12,9 +12,24 @@
         "tts",
         "scripting",
         "contextMenus",
-        "sidePanel"
+        "sidePanel",
+        "ttsEngine"
     ],
     "host_permissions": ["*://*/*"],
+    "tts_engine": {
+        "voices": [
+            {
+                "voice_name": "Alice",
+                "lang": "en-US",
+                "event_types": ["start", "marker", "end"]
+            },
+            {
+                "voice_name": "Pat",
+                "lang": "en-US",
+                "event_types": ["end"]
+            }
+        ]
+    },                
     "background": {
         "service_worker": "service-worker.js",
         "type": "module"
@@ -31,7 +46,9 @@
             "matches": ["*://*/*"],
             "js": [
                 "lib/jquery-3.7.1.slim.min.js",
-                "lib/SelectionTextNodeExtractor.js",
+                "lib/NodeWithWords.js",
+                "lib/readingHighlighter.js",
+                "lib/SelectTextExtractor.js",
                 "content-script.js"
             ],
             "run_at": "document_end"
