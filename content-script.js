@@ -18,18 +18,18 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     switch (message.message) {
         case "startReading": {
             let selection = window.getSelection();
-            console.log(`${context}:start reading:${selection.toString()}`);
-            let ste = new SelectTextExtractor(selection);
-
+            console.log(`${context}:start reading: \n ${selection.toString()}`);
+            let ste = new SelectTextExtractor(selection); // here
             console.group();
-            ste.nodesArray.forEach(value => {
-                console.log(`Node: ${value.node.textContent}`);
+            ste.nodesArray.forEach(nodeInArray => {
+                console.log(`Node: ${nodeInArray.node.textContent}`);
                 console.group();
-                value.wordsArray.forEach(value => {
+                nodeInArray.wordsArray.forEach(words => {
                     console.log(
-                        `Word: "${value.word}", Begin: ${value.start}, End: ${value.end}`
+                        `Word: "${words.word}", Begin: ${words.start}, End: ${words.end}`
                     );
                 });
+                nodeInArray.node.textContent = "<hr>";
                 console.groupEnd();
             });
             console.groupEnd();

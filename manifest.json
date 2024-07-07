@@ -47,7 +47,7 @@
             "js": [
                 "lib/jquery-3.7.1.slim.min.js",
                 "lib/NodeWithWords.js",
-                "lib/readingHighlighter.js",
+                "lib/NodesHighlighter.js",
                 "lib/SelectTextExtractor.js",
                 "content-script.js"
             ],

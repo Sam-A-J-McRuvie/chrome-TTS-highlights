@@ -1,7 +1,6 @@
 const context = 'service-worker';
 console.log(`${context}:loaded at:${new Date().toLocaleTimeString()}`); 
 
-
 chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
         id: "readSelectedText",
@@ -9,7 +8,6 @@ chrome.runtime.onInstalled.addListener(() => {
         contexts:["selection"], 
     });
 });
-
 
 chrome.contextMenus.onClicked.addListener((info) => {
     chrome.tabs.query({active : true, lastFocusedWindow : true}, function (tabs) {
