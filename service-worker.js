@@ -1,28 +1,21 @@
-// local variables
-import { ttsConfig } from "./locales.js";
-// required for updating/installing content scripts
-const manifestData = chrome.runtime.getManifest();
+const context = 'service-worker';
+console.log(`${context}:loaded at:${new Date().toLocaleTimeString()}`); 
 
-// on install
-chrome.runtime.onInstalled.addListener((details) => {
-    // create context menu
+chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
-        id: "openSidePanel",
-        title: "Open TTS Highlighter Side Panel",
-        contexts: ["all"],
+        id: "readSelectedText",
+        title: "Read selected text", 
+        contexts:["selection"], 
     });
 });
 
-// on context menu click events
-chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-    if (info.menuItemId === "openSidePanel") {
-        // open side panel
-        // must be done first or will get error
-        await chrome.sidePanel.open({ windowId: tab.windowId });
-        // const response = await chrome.tabs.sendMessage(tab.id, {
-        //     action: "get_dom_text_content",
-        // });
-        // console.log(response);
-    }
-});
-// TODO: add event listener for when active tab changes.
+chrome.contextMenus.onClicked.addListener((info) => {
+    chrome.tabs.query({active : true, lastFocusedWindow : true}, function (tabs) {
+        var tab = tabs[0];
+        var url = tab.url;
+        if (info.menuItemId === 'readSelectedText') {
+            console.log(`${context}:read selected text from:${url}`);
+            chrome.tabs.sendMessage(tab.id, {message: "startReading"});
+        }
+    });
+  })

@@ -1,0 +1,24 @@
+{
+  "name": "chrome-tts-highlights",
+  "version": "0.1.0",
+  "description": "TTS highliter chrome extention",
+  "main": "content-script.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "path": "node --experimental-import-meta-resolve path.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MadLadMadara/chrome-TTS-highlights.git"
+  },
+  "author": "Sam AJ McRuvie",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MadLadMadara/chrome-TTS-highlights/issues"
+  },
+  "homepage": "https://github.com/MadLadMadara/chrome-TTS-highlights#readme",
+  "dependencies": {
+    "jquery": "^3.7.1"
+  }
+}
