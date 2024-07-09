@@ -14,22 +14,43 @@
 const context = 'content-script'; // TODO: Refactor, not really needed
 console.log(`${context}:loaded at:${new Date().toLocaleTimeString()}`); 
 // TODO: Handle request from background script, to read the selected text
+// TODO: refactor to make readable
+// cant use innerHTML 
+// solution https://dev.to/btopro/simple-wrap-unwrap-methods-explained-3k5f#:~:text=How%20it%20works,inside%20that%20tag.
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     switch (message.message) {
         case "startReading": {
             let selection = window.getSelection();
+
+
             console.log(`${context}:start reading: \n ${selection.toString()}`);
-            let ste = new SelectTextExtractor(selection); // here
+            let ste = new SelectTextExtractor(selection);
+
+
             console.group();
             ste.nodesArray.forEach(nodeInArray => {
-                console.log(`Node: ${nodeInArray.node.textContent}`);
+
                 console.group();
-                nodeInArray.wordsArray.forEach(words => {
+
+                let wrapperEl = document.createElement('span');
+                wrapperEl.style.backgroundColor = 'yellow';
+
+                wrap(nodeInArray.node, wrapperEl);
+                
+                let newParent = wrapperEl.parentNode;
+                wrapperEl.innerHTML = "test";
+                wrapperEl.innerHTML = "no";
+
+                console.log(wrapperEl.innerHTML);
+                console.log(`parentNode: ${newParent.innerHTML}`);
+                console.groupEnd();
+                console.group();
+                nodeInArray.wordsArray.every(words => {
                     console.log(
                         `Word: "${words.word}", Begin: ${words.start}, End: ${words.end}`
                     );
+                    return false; 
                 });
-                nodeInArray.node.textContent = "<hr>";
                 console.groupEnd();
             });
             console.groupEnd();
@@ -54,3 +75,11 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         }
     }
 });
+
+
+function wrap(el, wrapper) {
+    if (el && el.parentNode) {
+      el.parentNode.insertBefore(wrapper, el);
+      wrapper.appendChild(el);
+    }
+  }
