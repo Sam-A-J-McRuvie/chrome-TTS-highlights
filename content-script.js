@@ -24,7 +24,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
 
             console.log(`${context}:start reading: \n ${selection.toString()}`);
-            let ste = new SelectTextExtractor(selection);
+            let ste = new SelectedTextExtractor(selection);
 
 
             console.group();

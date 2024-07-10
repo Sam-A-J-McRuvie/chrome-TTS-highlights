@@ -48,7 +48,7 @@
                 "lib/jquery-3.7.1.slim.min.js",
                 "lib/NodeWithWords.js",
                 "lib/NodesHighlighter.js",
-                "lib/SelectTextExtractor.js",
+                "lib/SelectedTextExtractor.js",
                 "content-script.js"
             ],
             "run_at": "document_end"
