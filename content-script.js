@@ -20,40 +20,11 @@ console.log(`${context}:loaded at:${new Date().toLocaleTimeString()}`);
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     switch (message.message) {
         case "startReading": {
+            
             let selection = window.getSelection();
+            let selectInj = new SelectTextExtractor();
+            console.log(JSON.stringify(selectInj.injectTags(selection)));
 
-
-            console.log(`${context}:start reading: \n ${selection.toString()}`);
-            let ste = new SelectTextExtractor(selection);
-
-
-            console.group();
-            ste.nodesArray.forEach(nodeInArray => {
-
-                console.group();
-
-                let wrapperEl = document.createElement('span');
-                wrapperEl.style.backgroundColor = 'yellow';
-
-                wrap(nodeInArray.node, wrapperEl);
-                
-                let newParent = wrapperEl.parentNode;
-                wrapperEl.innerHTML = "test";
-                wrapperEl.innerHTML = "no";
-
-                console.log(wrapperEl.innerHTML);
-                console.log(`parentNode: ${newParent.innerHTML}`);
-                console.groupEnd();
-                console.group();
-                nodeInArray.wordsArray.every(words => {
-                    console.log(
-                        `Word: "${words.word}", Begin: ${words.start}, End: ${words.end}`
-                    );
-                    return false; 
-                });
-                console.groupEnd();
-            });
-            console.groupEnd();
         }
         break;
         case "nextWord": {
@@ -76,7 +47,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     }
 });
 
-
+// move to select text extractor
 function wrap(el, wrapper) {
     if (el && el.parentNode) {
       el.parentNode.insertBefore(wrapper, el);
