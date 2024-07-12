@@ -23,7 +23,12 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
             
             let selection = window.getSelection();
             let selectInj = new SelectTextExtractor();
-            console.log(JSON.stringify(selectInj.injectTags(selection)));
+            let json = selectInj.injectTagsIn(selection);
+            console.log(json.fullText);
+            console.log(JSON.stringify(json));
+            selectInj.clearTags();
+            let jsons = selectInj.injectTagsIn(selection);
+            console.log(jsons.fullText);
 
         }
         break;
