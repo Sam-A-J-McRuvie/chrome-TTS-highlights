@@ -23,9 +23,9 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
             // 
             let selection = window.getSelection();
             let selectInj = new SelectTextExtractor(selection);
-
-
-
+            console.groupCollapsed("JSON");
+            console.log(JSON.stringify(selectInj.JSONTagsObj));
+            console.groupEnd();
         }
         break;
         case "nextWord": {
