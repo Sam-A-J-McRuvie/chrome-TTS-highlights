@@ -22,7 +22,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         case "startReading": {
             // 
             let selection = window.getSelection();
-            let selectInj = new SelectTextExtractor(selection);
+            let selectInj = new SelectTextHighlighter(selection);
             console.groupCollapsed("JSON");
             console.log(JSON.stringify(selectInj.JSONTagsObj));
             console.groupEnd();
