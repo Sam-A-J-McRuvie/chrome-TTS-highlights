@@ -20,15 +20,11 @@ console.log(`${context}:loaded at:${new Date().toLocaleTimeString()}`);
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     switch (message.message) {
         case "startReading": {
-            
+            // 
             let selection = window.getSelection();
-            let selectInj = new SelectTextExtractor();
-            let json = selectInj.injectTagsIn(selection);
-            console.log(json.fullText);
-            console.log(JSON.stringify(json));
-            selectInj.clearTags();
-            let jsons = selectInj.injectTagsIn(selection);
-            console.log(jsons.fullText);
+            let selectInj = new SelectTextExtractor(selection);
+
+
 
         }
         break;
