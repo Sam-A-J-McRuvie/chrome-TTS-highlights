@@ -45,7 +45,7 @@
         {
             "matches": ["*://*/*"],
             "js": [
-                "lib/SelectTextHighlighter.js",
+                "lib/SelectionElmInjector.js",
                 "content-script.js"
             ],
             "run_at": "document_end"
