@@ -13,6 +13,9 @@
 */
 const context = 'content-script'; // TODO: Refactor, not really needed
 console.log(`${context}:loaded at:${new Date().toLocaleTimeString()}`); 
+
+let textHighlighter;
+
 // TODO: Handle request from background script, to read the selected text
 // TODO: refactor to make readable
 // cant use innerHTML 
@@ -22,15 +25,19 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         case "startReading": {
             // 
             let selection = window.getSelection();
-            let selectInj = new SelectTextHighlighter(selection);
-            console.groupCollapsed("JSON");
-            console.log(JSON.stringify(selectInj.JSONTagsObj));
-            console.groupEnd();
+            textHighlighter = new TextHighlighter(selection, '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'));
+            textHighlighter.highlightWord();
+            // do {
+            //     highlighter.highlightSpan('#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'));
+            // } while (highlighter.nextSpan());
+
+
         }
         break;
         case "nextWord": {
-
-
+            console.log("next word");
+            textHighlighter.nextWord();
+            textHighlighter.highlightWord();
         }
         break;
         case "pauseReading": {
@@ -47,11 +54,3 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         }
     }
 });
-
-// move to select text extractor
-function wrap(el, wrapper) {
-    if (el && el.parentNode) {
-      el.parentNode.insertBefore(wrapper, el);
-      wrapper.appendChild(el);
-    }
-  }

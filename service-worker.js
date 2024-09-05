@@ -7,6 +7,11 @@ chrome.runtime.onInstalled.addListener(() => {
         title: "Read selected text", 
         contexts:["selection"], 
     });
+    chrome.contextMenus.create({
+        id: "nextWord",
+        title: "Next word", 
+        contexts:["page"], 
+    });
 });
 
 chrome.contextMenus.onClicked.addListener((info) => {
@@ -16,6 +21,8 @@ chrome.contextMenus.onClicked.addListener((info) => {
         if (info.menuItemId === 'readSelectedText') {
             console.log(`${context}:read selected text from:${url}`);
             chrome.tabs.sendMessage(tab.id, {message: "startReading"});
+        }else if(info.menuItemId === 'nextWord'){
+            chrome.tabs.sendMessage(tab.id, {message: "nextWord"});
         }
     });
   })
