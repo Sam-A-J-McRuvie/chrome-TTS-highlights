@@ -26,11 +26,9 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
             // 
             let selection = window.getSelection();
             textHighlighter = new TextHighlighter(selection, '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'));
-            textHighlighter.highlightWord();
-            // do {
-            //     highlighter.highlightSpan('#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'));
-            // } while (highlighter.nextSpan());
-
+            do {
+                textHighlighter.highlightSpan('#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'));
+            } while (textHighlighter.nextSpan());
 
         }
         break;
