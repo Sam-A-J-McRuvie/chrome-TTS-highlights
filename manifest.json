@@ -45,7 +45,7 @@
         {
             "matches": ["*://*/*"],
             "js": [
-                "lib/SelectionElmInjector.js",
+                "lib/TextNodeWrapper.js",
                 "content-script.js"
             ],
             "run_at": "document_end"
