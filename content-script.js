@@ -23,19 +23,36 @@ let textHighlighter;
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     switch (message.message) {
         case "startReading": {
+
+            let range = window.getSelection().getRangeAt(0)
+
+            let textNodeWrapper = new TextNodeWrapper("span");
+
+           
+
+            console.log(textNodeWrapper.wrapperElmTag);
+            console.log(textNodeWrapper.validElmTags);
+
+
+            textNodeWrapper.nodeFilterFunc = function(node){
+                throw new Error("node filter func");
+            }
+            
+            console.log(textNodeWrapper.wrapTextIn(range));
+
             // 
-            let selection = window.getSelection();
-            textHighlighter = new TextHighlighter(selection, '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'));
-            do {
-                textHighlighter.highlightSpan('#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'));
-            } while (textHighlighter.nextSpan());
+            // let selection = window.getSelection();
+            // textHighlighter = new TextHighlighter(selection, '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'));
+            // do {
+            //     textHighlighter.highlightSpan('#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'));
+            // } while (textHighlighter.nextSpan());
 
         }
         break;
         case "nextWord": {
-            console.log("next word");
-            textHighlighter.nextWord();
-            textHighlighter.highlightWord();
+            // console.log("next word");
+            // textHighlighter.nextWord();
+            // textHighlighter.highlightWord();
         }
         break;
         case "pauseReading": {
