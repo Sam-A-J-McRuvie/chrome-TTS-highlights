@@ -26,18 +26,11 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
             let range = window.getSelection().getRangeAt(0)
 
-            let textNodeWrapper = new TextNodeWrapper("span");
-
-           
-
-            console.log(textNodeWrapper.wrapperElmTag);
-            console.log(textNodeWrapper.validElmTags);
-
+            let textNodeWrapper = new TextNodeWrapper();
 
             textNodeWrapper.nodeFilterFunc = function(node){
                 throw new Error("node filter func");
             }
-            
             console.log(textNodeWrapper.wrapTextIn(range));
 
             // 
