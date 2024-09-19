@@ -20,18 +20,25 @@ let textHighlighter;
 // TODO: refactor to make readable
 // cant use innerHTML 
 // solution https://dev.to/btopro/simple-wrap-unwrap-methods-explained-3k5f#:~:text=How%20it%20works,inside%20that%20tag.
+let rangeTextHighlighter; 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     switch (message.message) {
-        case "startReading": {
+        case "init":{
+            rangeTextHighlighter = new RangeTextHighlighter(
+                range, 
+                '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'),
+                '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')
+            );
+        }
+        break;
+        case "start": {
 
             let range = window.getSelection().getRangeAt(0)
 
-            let textNodeWrapper = new TextNodeWrapper();
-
-            textNodeWrapper.nodeFilterFunc = function(node){
-                throw new Error("node filter func");
-            }
-            console.log(textNodeWrapper.wrapTextIn(range));
+            rangeTextHighlighter.next();
+            rangeTextHighlighter.highlightBetween(0, 4);
+            rangeTextHighlighter.clearHighlights();
+            rangeTextHighlighter.removeInjectedSpans();
 
             // 
             // let selection = window.getSelection();
@@ -42,18 +49,16 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
         }
         break;
-        case "nextWord": {
+        case "word": {
+
+        }
+        case "end": {
             // console.log("next word");
             // textHighlighter.nextWord();
             // textHighlighter.highlightWord();
         }
         break;
-        case "pauseReading": {
-
-
-        }
-        break;
-        case "stopReading": {
+        case "stop": {
             console.log(`${context}:stop reading:${message.message}`);
         }
         break;

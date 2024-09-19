@@ -1,6 +1,9 @@
 const context = 'service-worker';
 console.log(`${context}:loaded at:${new Date().toLocaleTimeString()}`); 
 
+// word event, start and end index of word
+// https://developer.chrome.com/docs/extensions/reference/api/tts#type-EventType
+
 chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
         id: "readSelectedText",
@@ -20,7 +23,7 @@ chrome.contextMenus.onClicked.addListener((info) => {
         var url = tab.url;
         if (info.menuItemId === 'readSelectedText') {
             console.log(`${context}:read selected text from:${url}`);
-            chrome.tabs.sendMessage(tab.id, {message: "startReading"});
+            chrome.tabs.sendMessage(tab.id, {message: "start"});
         }else if(info.menuItemId === 'nextWord'){
             chrome.tabs.sendMessage(tab.id, {message: "nextWord"});
         }
