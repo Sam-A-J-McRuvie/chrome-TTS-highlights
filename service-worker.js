@@ -3,7 +3,7 @@ console.log(`${context}:loaded at:${new Date().toLocaleTimeString()}`);
 
 // word event, start and end index of word
 // https://developer.chrome.com/docs/extensions/reference/api/tts#type-EventType
-
+// TODO implement TTS API
 chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
         id: "readSelectedText",

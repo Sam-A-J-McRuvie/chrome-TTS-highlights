@@ -17,9 +17,10 @@ console.log(`${context}:loaded at:${new Date().toLocaleTimeString()}`);
 let textHighlighter;
 
 // TODO: Handle request from background script, to read the selected text
-// TODO: refactor to make readable
 // cant use innerHTML 
 // solution https://dev.to/btopro/simple-wrap-unwrap-methods-explained-3k5f#:~:text=How%20it%20works,inside%20that%20tag.
+// TODO use window.onunload to call service worker to stop reading
+// TODO use window.onload to initialize the text highlighter
 let rangeTextHighlighter; 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     switch (message.message) {
