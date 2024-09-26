@@ -11,34 +11,35 @@
     not because they are easy, but because they are hard." 
     - JFK September 12, 1962, Rice University, Houston, Texas
 */
-const context = 'content-script'; // TODO: Refactor, not really needed
-console.log(`${context}:loaded at:${new Date().toLocaleTimeString()}`); 
+
+console.log(`content-script:loaded at:${new Date().toLocaleTimeString()}`); 
 
 let textHighlighter;
 
-// TODO: Handle request from background script, to read the selected text
+// p1: Handle request from background script, to read the selected text
 // cant use innerHTML 
 // solution https://dev.to/btopro/simple-wrap-unwrap-methods-explained-3k5f#:~:text=How%20it%20works,inside%20that%20tag.
-// TODO use window.onunload to call service worker to stop reading
-// TODO use window.onload to initialize the text highlighter
+// p2 use window.onunload to call service worker to stop reading
+// p2 use window.onload to initialize the text highlighter
 let rangeTextHighlighter; 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     switch (message.message) {
         case "init":{
-            rangeTextHighlighter = new RangeTextHighlighter(
-                range, 
+            rangeTextHighlighter = new textHighlighter(
                 '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'),
                 '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')
             );
         }
         break;
         case "start": {
-
+            rangeTextHighlighter = new textHighlighter(
+                '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'),
+                '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')
+            );
             let range = window.getSelection().getRangeAt(0)
 
             rangeTextHighlighter.next();
             rangeTextHighlighter.highlightBetween(0, 4);
-            rangeTextHighlighter.clearHighlights();
             rangeTextHighlighter.removeInjectedSpans();
 
             // 
