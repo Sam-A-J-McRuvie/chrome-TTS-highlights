@@ -13,9 +13,9 @@
 */
 
 console.log(`content-script:loaded at:${new Date().toLocaleTimeString()}`); 
-
-
-
+const textWrapper = new TextWrapper();
+const CHH = new CSSHighlightHandler();
+let injectedElements = null;
 // p2: Handle request from background script, to read the selected text
 // cant use innerHTML 
 // solution https://dev.to/btopro/simple-wrap-unwrap-methods-explained-3k5f#:~:text=How%20it%20works,inside%20that%20tag.
@@ -23,34 +23,21 @@ console.log(`content-script:loaded at:${new Date().toLocaleTimeString()}`);
 // p2 use window.onload to initialize the text highlighter
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     switch (message.message) {
-        case "init":{
-
-        }
-        break;
-        case "start": {
-            let CHH = new CSSHighlightHandler();
+        case "selection": {
             CHH.setStyle("#ff0000", "#ff0000");
-            CHH.setHighlight(window.getSelection().getRangeAt(0));
+            injectedElements = textWrapper.wrapTextIn(window.getSelection().getRangeAt(0));
             
-
-            // highlighterWalker= new HighlighterWalker();
-            // let range = window.getSelection().getRangeAt(0)
-            // console.log(range);
-            // let test = highlighterWalker.highlightIn(range);
-            // if (test) {console.log("highlighted");} else {console.log("not highlighted");}
-            // highlighterWalker.highlightBetween(0, 4);
-
-            // 
-            // let selection = window.getSelection();
-            // textHighlighter = new TextHighlighter(selection, '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'));
-            // do {
-            //     textHighlighter.highlightSpan('#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'));
-            // } while (textHighlighter.nextSpan());
-
         }
         break;
-        case "word": {
-
+        case "nextWord": {
+            console.log(injectedElements.wrapperElms[1]);
+            let id = injectedElements.wrapperElms[1].id;
+            let element = document.getElementById(id);
+            let range =  document.createRange();
+            range.setStart(element, 0);
+            range.setEnd(element, 10);
+            console.log(range);
+            CHH.setHighlight(range);
         }
         case "end": {
             // console.log("next word");

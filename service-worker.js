@@ -23,7 +23,7 @@ chrome.contextMenus.onClicked.addListener((info) => {
         var url = tab.url;
         if (info.menuItemId === 'readSelectedText') {
             console.log(`${context}:read selected text from:${url}`);
-            chrome.tabs.sendMessage(tab.id, {message: "start"});
+            chrome.tabs.sendMessage(tab.id, {message: "selection"});
         }else if(info.menuItemId === 'nextWord'){
             chrome.tabs.sendMessage(tab.id, {message: "nextWord"});
         }
