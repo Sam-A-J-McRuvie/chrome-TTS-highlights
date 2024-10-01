@@ -21,7 +21,6 @@ console.log(`content-script:loaded at:${new Date().toLocaleTimeString()}`);
 // solution https://dev.to/btopro/simple-wrap-unwrap-methods-explained-3k5f#:~:text=How%20it%20works,inside%20that%20tag.
 // p2 use window.onunload to call service worker to stop reading
 // p2 use window.onload to initialize the text highlighter
-let highlighterWalker; 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     switch (message.message) {
         case "init":{
@@ -29,12 +28,17 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         }
         break;
         case "start": {
-            highlighterWalker= new HighlighterWalker();
-            let range = window.getSelection().getRangeAt(0)
-            console.log(range);
-            let test = highlighterWalker.highlightIn(range);
-            if (test) {console.log("highlighted");} else {console.log("not highlighted");}
-            highlighterWalker.highlightBetween(0, 4);
+            let CHH = new CSSHighlightHandler();
+            CHH.setStyle("#ff0000", "#ff0000");
+            CHH.setHighlight(window.getSelection().getRangeAt(0));
+            
+
+            // highlighterWalker= new HighlighterWalker();
+            // let range = window.getSelection().getRangeAt(0)
+            // console.log(range);
+            // let test = highlighterWalker.highlightIn(range);
+            // if (test) {console.log("highlighted");} else {console.log("not highlighted");}
+            // highlighterWalker.highlightBetween(0, 4);
 
             // 
             // let selection = window.getSelection();
