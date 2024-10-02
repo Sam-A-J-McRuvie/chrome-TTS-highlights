@@ -1,6 +1,8 @@
 const context = 'service-worker';
 console.log(`${context}:loaded at:${new Date().toLocaleTimeString()}`); 
 
+// p4 https://groups.google.com/a/chromium.org/g/chromium-extensions/c/BmOlm2Vg7aM
+
 // word event, start and end index of word
 // https://developer.chrome.com/docs/extensions/reference/api/tts#type-EventType
 // p1 implement TTS API

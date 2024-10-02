@@ -13,8 +13,8 @@
 */
 
 console.log(`content-script:loaded at:${new Date().toLocaleTimeString()}`); 
-const textWrapper = new TextWrapper();
-const CHH = new CSSHighlightHandler();
+const textWrapper = new TextNodeWrapper();
+const CHH = new TextNodeHighlighter();
 let injectedElements = null;
 // p2: Handle request from background script, to read the selected text
 // cant use innerHTML 
@@ -30,12 +30,12 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         }
         break;
         case "nextWord": {
-            console.log(injectedElements.wrapperElms[1]);
-            let id = injectedElements.wrapperElms[1].id;
+            console.log(injectedElements.wrapperElms[0]);
+            let id = injectedElements.wrapperElms[0].id;
             let element = document.getElementById(id);
             let range =  document.createRange();
             range.setStart(element, 0);
-            range.setEnd(element, 10);
+            range.setEnd(element, 1);
             console.log(range);
             CHH.setHighlight(range);
         }
