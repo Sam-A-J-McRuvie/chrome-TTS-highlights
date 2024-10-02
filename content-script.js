@@ -11,62 +11,41 @@
     not because they are easy, but because they are hard." 
     - JFK September 12, 1962, Rice University, Houston, Texas
 */
-const context = 'content-script'; // TODO: Refactor, not really needed
-console.log(`${context}:loaded at:${new Date().toLocaleTimeString()}`); 
-// TODO: Handle request from background script, to read the selected text
-// TODO: refactor to make readable
+
+console.log(`content-script:loaded at:${new Date().toLocaleTimeString()}`); 
+const textWrapper = new TextNodeWrapper();
+const CHH = new TextNodeHighlighter();
+let injectedElements = null;
+// p2: Handle request from background script, to read the selected text
 // cant use innerHTML 
 // solution https://dev.to/btopro/simple-wrap-unwrap-methods-explained-3k5f#:~:text=How%20it%20works,inside%20that%20tag.
+// p2 use window.onunload to call service worker to stop reading
+// p2 use window.onload to initialize the text highlighter
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     switch (message.message) {
-        case "startReading": {
-            let selection = window.getSelection();
-
-
-            console.log(`${context}:start reading: \n ${selection.toString()}`);
-            let ste = new SelectTextExtractor(selection);
-
-
-            console.group();
-            ste.nodesArray.forEach(nodeInArray => {
-
-                console.group();
-
-                let wrapperEl = document.createElement('span');
-                wrapperEl.style.backgroundColor = 'yellow';
-
-                wrap(nodeInArray.node, wrapperEl);
-                
-                let newParent = wrapperEl.parentNode;
-                wrapperEl.innerHTML = "test";
-                wrapperEl.innerHTML = "no";
-
-                console.log(wrapperEl.innerHTML);
-                console.log(`parentNode: ${newParent.innerHTML}`);
-                console.groupEnd();
-                console.group();
-                nodeInArray.wordsArray.every(words => {
-                    console.log(
-                        `Word: "${words.word}", Begin: ${words.start}, End: ${words.end}`
-                    );
-                    return false; 
-                });
-                console.groupEnd();
-            });
-            console.groupEnd();
+        case "selection": {
+            CHH.setStyle("#ff0000", "#ff0000");
+            injectedElements = textWrapper.wrapTextIn(window.getSelection().getRangeAt(0));
+            
         }
         break;
         case "nextWord": {
-
-
+            console.log(injectedElements.wrapperElms[0]);
+            let id = injectedElements.wrapperElms[0].id;
+            let element = document.getElementById(id);
+            let range =  document.createRange();
+            range.setStart(element, 0);
+            range.setEnd(element, 1);
+            console.log(range);
+            CHH.setHighlight(range);
+        }
+        case "end": {
+            // console.log("next word");
+            // textHighlighter.nextWord();
+            // textHighlighter.highlightWord();
         }
         break;
-        case "pauseReading": {
-
-
-        }
-        break;
-        case "stopReading": {
+        case "stop": {
             console.log(`${context}:stop reading:${message.message}`);
         }
         break;
@@ -75,11 +54,3 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         }
     }
 });
-
-
-function wrap(el, wrapper) {
-    if (el && el.parentNode) {
-      el.parentNode.insertBefore(wrapper, el);
-      wrapper.appendChild(el);
-    }
-  }
