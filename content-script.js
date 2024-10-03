@@ -13,7 +13,6 @@
 */
 
 console.log(`content-script:loaded at:${new Date().toLocaleTimeString()}`); 
-const textWrapper = new TextNodeWrapper();
 const CHH = new TextNodeHighlighter();
 let injectedElements = null;
 // p2: Handle request from background script, to read the selected text
@@ -24,9 +23,7 @@ let injectedElements = null;
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     switch (message.message) {
         case "selection": {
-            CHH.setStyle("#ff0000", "#ff0000");
-            injectedElements = textWrapper.wrapTextIn(window.getSelection().getRangeAt(0));
-            
+            CHH.setStyle("#ff0000", "#ff0000");    
         }
         break;
         case "nextWord": {
