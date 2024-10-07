@@ -13,8 +13,12 @@
 */
 
 console.log(`content-script:loaded at:${new Date().toLocaleTimeString()}`); 
-const CHH = new TextNodeHighlighter();
-let injectedElements = null;
+const highlighter = new Highlighter();
+let textNodesObj = {
+    textNodes: [],
+    index: 0, 
+    isReading: false,
+};
 // p2: Handle request from background script, to read the selected text
 // cant use innerHTML 
 // solution https://dev.to/btopro/simple-wrap-unwrap-methods-explained-3k5f#:~:text=How%20it%20works,inside%20that%20tag.
@@ -23,31 +27,27 @@ let injectedElements = null;
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     switch (message.message) {
         case "selection": {
-            CHH.setStyle("#ff0000", "#ff0000");    
+            console.log(`read selected text:${message.message}`);
+            let selection = window.getSelection();
+            let range = selection.getRangeAt(0);
+            textNodesObj.textNodes = Highlighter.parseTextNodes(range);
+            textNodesObj.index = 0;
+            highlighter.setHighlight(textNodesObj.textNodes[textNodesObj.index]);
         }
         break;
-        case "nextWord": {
-            console.log(injectedElements.wrapperElms[0]);
-            let id = injectedElements.wrapperElms[0].id;
-            let element = document.getElementById(id);
-            let range =  document.createRange();
-            range.setStart(element, 0);
-            range.setEnd(element, 1);
-            console.log(range);
-            CHH.setHighlight(range);
+        case "word": {
+
         }
         case "end": {
-            // console.log("next word");
-            // textHighlighter.nextWord();
-            // textHighlighter.highlightWord();
+
         }
         break;
         case "stop": {
-            console.log(`${context}:stop reading:${message.message}`);
+            console.log(`stop reading:${message.message}`);
         }
         break;
         default: {
-            throw new Error(`${context}:unknown message:${message.message}`);
+            throw new Error(`unknown message:${message.message}`);
         }
     }
 });

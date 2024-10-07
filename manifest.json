@@ -45,7 +45,7 @@
         {
             "matches": ["*://*/*"],
             "js": [
-                "lib/TextNodeWrapperAndParser.js",
+                "lib/Highlighter.js",
                 "content-script.js"
             ],
             "run_at": "document_end"

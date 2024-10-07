@@ -8,7 +8,7 @@ console.log(`${context}:loaded at:${new Date().toLocaleTimeString()}`);
 // p1 implement TTS API
 chrome.runtime.onInstalled.addListener(() => { // 
     chrome.contextMenus.create({
-        id: "readSelectedText",
+        id: "textSelected",
         title: "Read selected text", 
         contexts:["selection"], 
     });
@@ -23,7 +23,7 @@ chrome.contextMenus.onClicked.addListener((info) => {
     chrome.tabs.query({active : true, lastFocusedWindow : true}, function (tabs) {
         var tab = tabs[0];
         var url = tab.url;
-        if (info.menuItemId === 'readSelectedText') {
+        if (info.menuItemId === 'textSelected') {
             console.log(`${context}:read selected text from:${url}`);
             chrome.tabs.sendMessage(tab.id, {message: "selection"});
         }else if(info.menuItemId === 'nextWord'){
