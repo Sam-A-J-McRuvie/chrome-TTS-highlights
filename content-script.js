@@ -13,6 +13,8 @@
 */
 
 console.log(`content-script:loaded at:${new Date().toLocaleTimeString()}`); 
+
+
 const highlighter = new Highlighter();
 let textNodesObj = {
     textNodes: [],
@@ -26,13 +28,13 @@ let textNodesObj = {
 // p2 use window.onload to initialize the text highlighter
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     switch (message.message) {
-        case "selection": {
+        case "selected": {
             console.log(`read selected text:${message.message}`);
             let selection = window.getSelection();
-            let range = selection.getRangeAt(0);
-            textNodesObj.textNodes = Highlighter.parseTextNodes(range);
+            let selectedRange = selection.getRangeAt(0);
+            textNodesObj.textNodes = Highlighter.parseTextNodes(selectedRange);
             textNodesObj.index = 0;
-            highlighter.setHighlight(textNodesObj.textNodes[textNodesObj.index]);
+            textNodesObj.isReading = true;
         }
         break;
         case "word": {
@@ -44,6 +46,14 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         break;
         case "stop": {
             console.log(`stop reading:${message.message}`);
+        }
+        break;
+        case "test": {
+            let highlightRange = new Range();
+            highlightRange.setStart(textNodesObj.textNodes[textNodesObj.index], 0);
+            highlightRange.setEnd(textNodesObj.textNodes[textNodesObj.index], 5);
+            highlighter.setHighlight(highlightRange);
+            console.log(`test:${highlightRange}`);
         }
         break;
         default: {
