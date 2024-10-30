@@ -36,6 +36,8 @@ chrome.contextMenus.onClicked.addListener((info) => {
 });
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    console.log(`service-worker:received message:${request.type}`);
+    const tab = sender.tab.id
     switch (request.type) {
         case "read":
         chrome.tts.speak(
@@ -48,7 +50,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                             console.log("Started speaking");
                             break;
                         case "word":
-                            chrome.tabs.sendMessage(sender.tab.id, { type: "test",  charIndex: event.charIndex, charLength: event.charLength });
+                            chrome.tabs.sendMessage(tab, { type: "test",  charIndex: event.charIndex, charLength: event.charLength });
                             console.log(
                                 `Word event: ${event.charIndex} to ${
                                     event.charIndex + event.charLength
@@ -73,5 +75,4 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         );
         break;
     }
-    sendResponse({ message: "success" });
 });

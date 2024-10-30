@@ -36,7 +36,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
             textNodesObj.index = 0;
             textNodesObj.isReading = textNodesObj.textNodes.length > 0;
             if (textNodesObj.isReading) {
-                chrome.tabs.sendMessage(sender.tab.id, {
+                chrome.runtime.sendMessage({
                     type: "read",
                     utterance: "test",
                 });
