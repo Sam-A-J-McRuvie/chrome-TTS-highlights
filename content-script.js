@@ -12,52 +12,44 @@
     - JFK September 12, 1962, Rice University, Houston, Texas
 */
 
-console.log(`content-script:loaded at:${new Date().toLocaleTimeString()}`); 
-
+console.log(`content-script:loaded at:${new Date().toLocaleTimeString()}`);
 
 const highlighter = new Highlighter();
+
 let textNodesObj = {
     textNodes: [],
-    index: 0, 
+    index: 0,
     isReading: false,
 };
 // p2: Handle request from background script, to read the selected text
-// cant use innerHTML 
+// cant use innerHTML
 // solution https://dev.to/btopro/simple-wrap-unwrap-methods-explained-3k5f#:~:text=How%20it%20works,inside%20that%20tag.
 // p2 use window.onunload to call service worker to stop reading
 // p2 use window.onload to initialize the text highlighter
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-    switch (message.message) {
-        case "selected": {
+    switch (message.type) {
+        case "selected":
             console.log(`read selected text:${message.message}`);
             let selection = window.getSelection();
             let selectedRange = selection.getRangeAt(0);
             textNodesObj.textNodes = Highlighter.parseTextNodes(selectedRange);
             textNodesObj.index = 0;
-            textNodesObj.isReading = true;
-        }
-        break;
-        case "word": {
+            textNodesObj.isReading = textNodesObj.textNodes.length > 0;
+            if (textNodesObj.isReading) {
+                chrome.tabs.sendMessage(sender.tab.id, {
+                    type: "read",
+                    utterance: "test",
+                });
+            }
+            break;
+        case "word":
 
-        }
-        case "end": {
+        case "end":
 
-        }
-        break;
-        case "stop": {
-            console.log(`stop reading:${message.message}`);
-        }
-        break;
-        case "test": {
-            let highlightRange = new Range();
-            highlightRange.setStart(textNodesObj.textNodes[textNodesObj.index], 0);
-            highlightRange.setEnd(textNodesObj.textNodes[textNodesObj.index], 5);
-            highlighter.setHighlight(highlightRange);
-            console.log(`test:${highlightRange}`);
-        }
-        break;
-        default: {
+        case "test":
+            console.log(`test message:${message}`);
+            break;
+        default:
             throw new Error(`unknown message:${message.message}`);
-        }
     }
 });
