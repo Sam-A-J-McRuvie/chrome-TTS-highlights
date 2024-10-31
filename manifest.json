@@ -19,14 +19,9 @@
     "tts_engine": {
         "voices": [
             {
-                "voice_name": "Alice",
-                "lang": "en-US",
-                "event_types": ["start", "marker", "end"]
-            },
-            {
-                "voice_name": "Pat",
-                "lang": "en-US",
-                "event_types": ["end"]
+                "voice_name": "Microsoft George - English (United Kingdom)",
+                "lang": "en-GB",
+                "event_types": ["start", "marker", "end", "word"]
             }
         ]
     },                

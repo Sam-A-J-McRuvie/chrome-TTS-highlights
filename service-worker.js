@@ -6,7 +6,7 @@ console.log(`${context}:loaded at:${new Date().toLocaleTimeString()}`);
 // word event, start and end index of word
 // https://developer.chrome.com/docs/extensions/reference/api/tts#type-EventType
 
-// p1 implement TTS API
+
 chrome.runtime.onInstalled.addListener(() => {
     //
     chrome.contextMenus.create({
@@ -36,43 +36,20 @@ chrome.contextMenus.onClicked.addListener((info) => {
 });
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    console.log(`service-worker:received message:${request.type}`);
-    const tab = sender.tab.id
+    console.log(`received message:${request.type}`);
+    const tab = sender.tab;
     switch (request.type) {
         case "read":
-        chrome.tts.speak(
-            request.utterance,
-            { rate: 0.8 },
-            {
-                onEvent: function (event) {
-                    switch (message.type) {
-                        case "start":
-                            console.log("Started speaking");
-                            break;
-                        case "word":
-                            chrome.tabs.sendMessage(tab, { type: "test",  charIndex: event.charIndex, charLength: event.charLength });
-                            console.log(
-                                `Word event: ${event.charIndex} to ${
-                                    event.charIndex + event.charLength
-                                }`
-                            );
-                            break;
-                        case "end":
-                            console.log("Finished speaking");
-
-                            break;
-                        case "error":
-                            console.log("Error: " + event.errorMessage);
-
-                            break;
-                        default:
-                            throw new Error(
-                                `unknown message:${message.message}`
-                            );
-                    }
-                },
-            }
-        );
+            chrome.tts.speak(request.utterance, {
+                onEvent: (event) => eventHandlerChromeTTS(event, tab)
+            });
         break;
     }
 });
+
+// p1 need tts voice that allows for word events
+function eventHandlerChromeTTS(event, tab) {
+    console.log(`TTS event:${event.type}`);
+    chrome.tabs.sendMessage(tab.id, { type: "test"}); // p3 need to test if tab.id is correct
+}
+

@@ -16,7 +16,7 @@ console.log(`content-script:loaded at:${new Date().toLocaleTimeString()}`);
 
 const highlighter = new Highlighter();
 
-let textNodesObj = {
+let textNodesObj = { // p5 rename
     textNodes: [],
     index: 0,
     isReading: false,
@@ -27,9 +27,9 @@ let textNodesObj = {
 // p2 use window.onunload to call service worker to stop reading
 // p2 use window.onload to initialize the text highlighter
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+    console.log(`content-script:received message:${message.type}`);
     switch (message.type) {
         case "selected":
-            console.log(`read selected text:${message.message}`);
             let selection = window.getSelection();
             let selectedRange = selection.getRangeAt(0);
             textNodesObj.textNodes = Highlighter.parseTextNodes(selectedRange);
@@ -38,7 +38,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
             if (textNodesObj.isReading) {
                 chrome.runtime.sendMessage({
                     type: "read",
-                    utterance: "test",
+                    utterance: textNodesObj.textNodes[textNodesObj.index].textContent,
                 });
             }
             break;
@@ -47,9 +47,9 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         case "end":
 
         case "test":
-            console.log(`test message:${message}`);
+            
             break;
         default:
-            throw new Error(`unknown message:${message.message}`);
+            throw new Error(`unknown message:${message}`);
     }
 });
