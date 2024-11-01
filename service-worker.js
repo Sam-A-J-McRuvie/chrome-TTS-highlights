@@ -1,21 +1,11 @@
-const context = "service-worker";
-console.log(`${context}:loaded at:${new Date().toLocaleTimeString()}`);
-
-// p4 https://groups.google.com/a/chromium.org/g/chromium-extensions/c/BmOlm2Vg7aM
-
-// word event, start and end index of word
-// https://developer.chrome.com/docs/extensions/reference/api/tts#type-EventType
-
+console.log(`service-worker:loaded at:${new Date().toLocaleTimeString()}`);
+// p4 settings menu for tts voice and rate. Need list of available voices
 chrome.runtime.onInstalled.addListener(() => {
+    // p2 create context for stop, pause and resume
     chrome.contextMenus.create({
         id: "selected",
         title: "Read selected text",
         contexts: ["selection"],
-    });
-    chrome.contextMenus.create({
-        id: "test",
-        title: "Test",
-        contexts: ["page"],
     });
 });
 // context menu click event
@@ -40,23 +30,30 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         case "read":
             chrome.tts.speak(request.utterance, {
                 voiceName: "Microsoft George - English (United Kingdom)",
-                rate: 10, 
-                lang: 'en-GB',
+                rate: 10,
+                lang: "en-GB",
                 onEvent: (event) => eventHandlerChromeTTS(event, tab),
             });
             break;
     }
 });
-// p1 need tts voice that allows for word events
+
+
+// p1 handel interrupt, stop, pause and resume events
+// p5 handel on voice change event
 function eventHandlerChromeTTS(event, tab) {
     console.log(`TTS event:${event.type}`);
-    chrome.tabs.get(tab.id).then((tab) => { 
+    chrome.tabs.get(tab.id).then((tab) => {
         switch (event.type) {
             case "word":
-                chrome.tabs.sendMessage(tab.id, { type: "word" , charIndex: event.charIndex, wordLength: event.length});
+                chrome.tabs.sendMessage(tab.id, {
+                    type: "word",
+                    charIndex: event.charIndex,
+                    wordLength: event.length,
+                });
                 break;
             case "end":
-                chrome.tabs.sendMessage(tab.id, { type: "end"});
+                chrome.tabs.sendMessage(tab.id, { type: "end" });
                 break;
             default:
                 console.log(`unknown event:${event.type}`);

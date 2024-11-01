@@ -17,15 +17,10 @@ console.log(`content-script:loaded at:${new Date().toLocaleTimeString()}`);
 const highlighter = new Highlighter();
 
 let textNodesObj = {
-    // p5 rename
     textNodes: [],
     index: 0,
 };
-// p2: Handle request from background script, to read the selected text
-// cant use innerHTML
-// solution https://dev.to/btopro/simple-wrap-unwrap-methods-explained-3k5f#:~:text=How%20it%20works,inside%20that%20tag.
-// p2 use window.onunload to call service worker to stop reading
-// p2 use window.onload to initialize the text highlighter
+
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     switch (message.type) {
         case "selected":
@@ -44,7 +39,9 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
             selection.removeAllRanges();
             break;
         case "word":
-            console.log(`received message: word event:${message.charIndex}:${message.wordLength}`);
+            console.log(
+                `received message: word event:${message.charIndex}:${message.wordLength}`
+            );
             const textNode = textNodesObj.textNodes[textNodesObj.index];
             const range = new Range();
             range.setStart(textNode, message.charIndex);
@@ -60,14 +57,14 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
                     utterance:
                         textNodesObj.textNodes[textNodesObj.index].textContent,
                 });
-            }else {
+            } else {
                 highlighter.removeHighlight();
             }
             break;
         case "test":
             console.log(`received message:test event`);
             break;
-        default:
+        default: // p3 handel tts stop, pause and resume events. If any issue occurs clear the highlights. can just use default case
             throw new Error(`unknown message:${message}`);
     }
 });
