@@ -6,9 +6,7 @@ console.log(`${context}:loaded at:${new Date().toLocaleTimeString()}`);
 // word event, start and end index of word
 // https://developer.chrome.com/docs/extensions/reference/api/tts#type-EventType
 
-
 chrome.runtime.onInstalled.addListener(() => {
-    //
     chrome.contextMenus.create({
         id: "selected",
         title: "Read selected text",
@@ -20,7 +18,7 @@ chrome.runtime.onInstalled.addListener(() => {
         contexts: ["page"],
     });
 });
-
+// context menu click event
 chrome.contextMenus.onClicked.addListener((info) => {
     chrome.tabs.query(
         { active: true, lastFocusedWindow: true },
@@ -41,15 +39,27 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     switch (request.type) {
         case "read":
             chrome.tts.speak(request.utterance, {
-                onEvent: (event) => eventHandlerChromeTTS(event, tab)
+                voiceName: "Microsoft George - English (United Kingdom)",
+                rate: 10, 
+                lang: 'en-GB',
+                onEvent: (event) => eventHandlerChromeTTS(event, tab),
             });
-        break;
+            break;
     }
 });
-
 // p1 need tts voice that allows for word events
 function eventHandlerChromeTTS(event, tab) {
     console.log(`TTS event:${event.type}`);
-    chrome.tabs.sendMessage(tab.id, { type: "test"}); // p3 need to test if tab.id is correct
+    chrome.tabs.get(tab.id).then((tab) => { 
+        switch (event.type) {
+            case "word":
+                chrome.tabs.sendMessage(tab.id, { type: "word" , charIndex: event.charIndex, wordLength: event.length});
+                break;
+            case "end":
+                chrome.tabs.sendMessage(tab.id, { type: "end"});
+                break;
+            default:
+                console.log(`unknown event:${event.type}`);
+        }
+    });
 }
-

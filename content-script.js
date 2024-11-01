@@ -16,10 +16,10 @@ console.log(`content-script:loaded at:${new Date().toLocaleTimeString()}`);
 
 const highlighter = new Highlighter();
 
-let textNodesObj = { // p5 rename
+let textNodesObj = {
+    // p5 rename
     textNodes: [],
     index: 0,
-    isReading: false,
 };
 // p2: Handle request from background script, to read the selected text
 // cant use innerHTML
@@ -27,27 +27,45 @@ let textNodesObj = { // p5 rename
 // p2 use window.onunload to call service worker to stop reading
 // p2 use window.onload to initialize the text highlighter
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-    console.log(`content-script:received message:${message.type}`);
     switch (message.type) {
         case "selected":
-            let selection = window.getSelection();
-            let selectedRange = selection.getRangeAt(0);
+            console.log(`received message: selected`);
+            const selection = window.getSelection();
+            const selectedRange = selection.getRangeAt(0);
             textNodesObj.textNodes = Highlighter.parseTextNodes(selectedRange);
             textNodesObj.index = 0;
-            textNodesObj.isReading = textNodesObj.textNodes.length > 0;
-            if (textNodesObj.isReading) {
+            if (textNodesObj.textNodes.length > 0) {
                 chrome.runtime.sendMessage({
                     type: "read",
-                    utterance: textNodesObj.textNodes[textNodesObj.index].textContent,
+                    utterance:
+                        textNodesObj.textNodes[textNodesObj.index].textContent,
                 });
             }
+            selection.removeAllRanges();
             break;
         case "word":
-
+            console.log(`received message: word event:${message.charIndex}:${message.wordLength}`);
+            const textNode = textNodesObj.textNodes[textNodesObj.index];
+            const range = new Range();
+            range.setStart(textNode, message.charIndex);
+            range.setEnd(textNode, message.charIndex + message.wordLength);
+            highlighter.setHighlight(range);
+            break;
         case "end":
-
+            console.log(`received message:end event`);
+            if (textNodesObj.index < textNodesObj.textNodes.length - 1) {
+                textNodesObj.index++;
+                chrome.runtime.sendMessage({
+                    type: "read",
+                    utterance:
+                        textNodesObj.textNodes[textNodesObj.index].textContent,
+                });
+            }else {
+                highlighter.removeHighlight();
+            }
+            break;
         case "test":
-            
+            console.log(`received message:test event`);
             break;
         default:
             throw new Error(`unknown message:${message}`);
